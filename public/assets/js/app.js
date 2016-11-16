@@ -1,6 +1,6 @@
 var map;
 var myLatLng;
-var socket = io.connect('http://localhost:7015');
+var socket = io.connect('window.location.hostname');
 
 $(document).ready(function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
