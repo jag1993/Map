@@ -21,7 +21,7 @@ app.set('view engine', 'handlebars');
 
 
 
-var port = 7015;
+var port = process.env.PORT || 7015;
 var server = app.listen(port);
 var io      = require('socket.io').listen(server);
 
