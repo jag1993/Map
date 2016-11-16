@@ -51,5 +51,5 @@ function error(err) {
 
 
 $(document).ready(function position(){
-    navigator.geolocation.watchPosition(success,error,options);
+    navigator.geolocation.getCurrentPosition(success,error,options);
 });
