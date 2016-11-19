@@ -3,10 +3,12 @@ var myLatLng;
 var marker
 var socket = io.connect(window.location.hostname);
 
-$(document).ready(function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
+$(document).ready(
+  navigator.geolocation.getCurrentPosition(function (position) {
+    map = new google.maps.Map(document.getElementById('map'), {
     zoom:10,
-    center: {lat:36.778259, lng:  -119.417931}
+    center: position
+  })
   })
 });
 
