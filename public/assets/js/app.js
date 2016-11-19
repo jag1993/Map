@@ -19,7 +19,7 @@ $(document).ready(function initMap() {
 
 
 var options = {
-  enableHighAccuracy: true,
+  enableHighAccuracy: false,
   timeout:1000,
   maximumAge: 0
 };
