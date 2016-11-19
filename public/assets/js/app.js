@@ -33,6 +33,7 @@ function success(pos) {
   socket.emit('send_location', myLatLng);
   socket.on('new_location', function(data){
     id = socket.io.engine.id
+    console.log(id);
     setPosition(data);
   })
 };
