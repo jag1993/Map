@@ -25,17 +25,35 @@ var options = {
 
 
 
-function success(pos) {
-  var crd = pos.coords;
-  myLatLng = {lat: crd.latitude, lng: crd.longitude};
-  console.log(myLatLng);
-  socket.emit('send_location', myLatLng);
-  socket.on('new_location', function(data){
-    id = socket.io.engine.id
-  makeMarker(data,map);
-  })
-};
+// function success(pos) {
+//   var crd = pos.coords;
+//   myLatLng = {lat: crd.latitude, lng: crd.longitude};
+//   console.log(myLatLng);
+//   socket.emit('send_location', myLatLng);
+//   socket.on('new_location', function(data){
+//     id = socket.io.engine.id
+//   makeMarker(data,map);
+//   })
+// };
 
+
+function success(pos) {
+   var crd = pos.cords;
+   myLatLng = {
+       lat: crd.latitude, lng: crd.longitude
+   }
+   var _emit = socket.emit,
+       params = ["send_location", myLatLng],
+       id = socket.io.engine.id;
+
+   socket.emit = function () {
+       _emit.apply(id, params);
+   }
+   socket.on('new_location', function (data) {
+       (makeMarker(data, map));
+   });
+
+}
 
 
 
