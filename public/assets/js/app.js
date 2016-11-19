@@ -1,5 +1,6 @@
 var map;
 var myLatLng;
+var marker
 var socket = io.connect(window.location.hostname);
 
 $(document).ready(function initMap() {
@@ -35,7 +36,7 @@ function success(pos) {
 
 function makeMarker(myLatLng,map){
   if(myLatLng){
-    var marker = new google.maps.Marker({
+          marker = new google.maps.Marker({
           position: myLatLng,
           map: map,
           title: 'Test'
