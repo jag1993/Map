@@ -13,6 +13,7 @@ $(document).ready(function initMap() {
      navigator.geolocation.getCurrentPosition(function (position) {
          initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
          map.setCenter(initialLocation);
+         makeMarker(position,map);
      });
  }
 
@@ -25,35 +26,35 @@ var options = {
 
 
 
-// function success(pos) {
-//   var crd = pos.coords;
-//   myLatLng = {lat: crd.latitude, lng: crd.longitude};
-//   console.log(myLatLng);
-//   socket.emit('send_location', myLatLng);
-//   socket.on('new_location', function(data){
-//     id = socket.io.engine.id
-//   makeMarker(data,map);
-//   })
-// };
-
-
 function success(pos) {
-   var crd = pos.coords;
-   myLatLng = {
-       lat: crd.latitude, lng: crd.longitude
-   }
-   var _emit = socket.emit,
-       params = ["send_location", myLatLng],
-       id = socket.io.engine.id;
+  var crd = pos.coords;
+  myLatLng = {lat: crd.latitude, lng: crd.longitude};
+  console.log(myLatLng);
+  socket.emit('send_location', myLatLng);
+  socket.on('new_location', function(data){
+    id = socket.io.engine.id
+    setPosition(data);
+  })
+};
 
-   socket.emit = function () {
-       _emit.apply(id, params);
-   }
-   socket.on('new_location', function (data) {
-       (makeMarker(data, map));
-   });
 
-}
+// function success(pos) {
+//    var crd = pos.coords;
+//    myLatLng = {
+//        lat: crd.latitude, lng: crd.longitude
+//    }
+//    var _emit = socket.emit,
+//        params = ["send_location", myLatLng],
+//        id = socket.io.engine.id;
+
+//    socket.emit = function () {
+//        _emit.apply(id, params);
+//    }
+//    socket.on('new_location', function (data) {
+//        (makeMarker(data, map));
+//    });
+
+// }
 
 
 
@@ -67,6 +68,9 @@ function makeMarker(myLatLng,map){
   }
 }
 
+function setPosition(coords){
+  marker.setPosition(coords);
+}
 
 
 function error(err) {
