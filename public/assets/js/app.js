@@ -5,7 +5,7 @@ var socket = io.connect(window.location.hostname);
 
 $(document).ready(function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 20
+    zoom:30
   })
 });
 
@@ -13,9 +13,7 @@ $(document).ready(function initMap() {
      navigator.geolocation.getCurrentPosition(function (position) {
          initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
          map.setCenter(initialLocation);
-         makeMarker(position,map);
      });
-
  }
 
 
@@ -34,7 +32,7 @@ function success(pos) {
   socket.emit('send_location', myLatLng);
   socket.on('new_location', function(data){
     id = socket.io.engine.id
-     marker.setPosition(data);
+  makeMarker(data,map);
   })
 };
 
