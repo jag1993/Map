@@ -3,20 +3,23 @@ var myLatLng;
 var marker
 var socket = io.connect(window.location.hostname);
 
-$(document).ready(
-  navigator.geolocation.getCurrentPosition(function (position) {
-    map = new google.maps.Map(document.getElementById('map'), {
-    zoom:10,
-    center: position
-  })
+$(document).ready(function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom:20
   })
 });
 
+ if (navigator.geolocation) {
+     navigator.geolocation.getCurrentPosition(function (position) {
+         initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+         map.setCenter(initialLocation);
+     });
+ }
 
 
 var options = {
   enableHighAccuracy: true,
-  timeout: 1000,
+  timeout:1000,
   maximumAge: 0
 };
 
