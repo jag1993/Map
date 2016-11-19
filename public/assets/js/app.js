@@ -38,7 +38,7 @@ var options = {
 
 
 function success(pos) {
-   var crd = pos.cords;
+   var crd = pos.coords;
    myLatLng = {
        lat: crd.latitude, lng: crd.longitude
    }
