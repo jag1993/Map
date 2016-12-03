@@ -3,13 +3,15 @@ var myLatLng;
 var marker;
 var socket = io.connect('http://localhost:7015');
 var users_logged = [];
+var users_markers = [];
 
+setPosition();
 //To get user details and sends it to the backend
 $('#submit').on('click', function() {
     var userDetails = {
         userName: $('#userID').val(),
         position: myLatLng
-            //add socket id if you need to.
+            //add socket id if you need to
     }
     if (userDetails === '') {
         alert('ADD Details')
@@ -73,14 +75,23 @@ function makeMarker(id,myLatLng, map) {
             id:id
         });
     }
+    marker.setMap(map);
+    users_markers.push(marker);
 }
 
 
 ///USE THIS WHEN YOU'RE WATCHING
 function setPosition(coords) {
-    marker.setPosition(coords);
+
+  while(users_markers.length <0){
+    //users_markers[i].setPosition(coords);
+      console.log("hey while loop");
+    users_markers.pop().setMap(null);
+  }
+  users_markers.length = 0;
 }
 
+//window.setInterval(setPosition(myLatLng), 2000);
 
 function error(err) {
     console.log('ERROR(' + err.code + '): ' + err.message);
@@ -88,5 +99,5 @@ function error(err) {
 
 //get current position of person
 $(document).ready(function position() {
-    navigator.geolocation.getCurrentPosition(success, error, options);
+    navigator.geolocation.watchPosition(success, error, options);
 });
