@@ -1,84 +1,92 @@
 var map;
 var myLatLng;
-var marker
-var socket = io.connect(window.location.hostname);
+var marker;
+var socket = io.connect('http://localhost:7015');
+var users_logged = [];
+
+//To get user details and sends it to the backend
+$('#submit').on('click', function() {
+    var userDetails = {
+        userName: $('#userID').val(),
+        position: myLatLng
+            //add socket id if you need to.
+    }
+    if (userDetails === '') {
+        alert('ADD Details')
+    } else {
+        socket.emit('new_user', userDetails);
+        socket.on('new_users', function(data) {
+            //this gets an array of the users that are logged in
+            users_logged = data;
+            if (users_logged.length > 0) {
+                for (i = 0; i < users_logged.length; i++) {
+                   makeMarker(users_logged[i].userName,users_logged[i].position,map);
+                }
+            }
+
+        })
+    }
+})
+
 
 $(document).ready(function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    zoom:30
-  })
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 15
+    })
 });
 
- if (navigator.geolocation) {
-     navigator.geolocation.getCurrentPosition(function (position) {
-         initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-         map.setCenter(initialLocation);
-         makeMarker(position,map);
-     });
- }
+
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+        initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        map.setCenter(initialLocation);
+    });
+}
 
 
 var options = {
-  enableHighAccuracy: false,
-  timeout:1000,
-  maximumAge: 0
+    enableHighAccuracy: false,
+    timeout: 1000,
+    maximumAge: 0
 };
 
 
 
 function success(pos) {
-  var crd = pos.coords;
-  myLatLng = {lat: crd.latitude, lng: crd.longitude};
-  console.log(myLatLng);
-  socket.emit('send_location', myLatLng);
-  socket.on('new_location', function(data){
-    id = socket.io.engine.id
-    console.log(id)
-    setPosition(data);
-  })
+    var crd = pos.coords;
+    myLatLng = { lat: crd.latitude, lng: crd.longitude };
+    console.log(myLatLng);
+    socket.emit('send_location', myLatLng);
+    socket.on('new_location', function(data){
+      id = socket.io.engine.id
+      console.log(id)
+    })
 };
 
 
-// function success(pos) {
-//    var crd = pos.coords;
-//    myLatLng = {
-//        lat: crd.latitude, lng: crd.longitude
-//    }
-//    var _emit = socket.emit,
-//        params = ["send_location", myLatLng],
-//        id = socket.io.engine.id;
 
-//    socket.emit = function () {
-//        _emit.apply(id, params);
-//    }
-//    socket.on('new_location', function (data) {
-//        (makeMarker(data, map));
-//    });
-
-// }
-
-
-
-function makeMarker(myLatLng,map){
-  if(myLatLng){
-          marker = new google.maps.Marker({
-          position: myLatLng,
-          map: map,
-          title: 'Test'
+function makeMarker(id,myLatLng, map) {
+    if (myLatLng) {
+        marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            id:id
         });
-  }
+    }
 }
 
-function setPosition(coords){
-  marker.setPosition(coords);
+
+///USE THIS WHEN YOU'RE WATCHING
+function setPosition(coords) {
+    marker.setPosition(coords);
 }
 
 
 function error(err) {
-  console.log('ERROR('+ err.code + '): ' + err.message);
+    console.log('ERROR(' + err.code + '): ' + err.message);
 };
 
-
-$(document).ready(function position(){
-    navigator.geolocation.watchPosition(success,error,options);
+//get current position of person
+$(document).ready(function position() {
+    navigator.geolocation.getCurrentPosition(success, error, options);
 });
